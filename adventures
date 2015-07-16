@@ -45,22 +45,26 @@ M1 <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIF
 M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000 VERIFIED
 M3 <- read.csv("HE000_output12001-18000.csv", header = FALSE) #matlab12001-18000 VERIFIED
 M4 <- read.csv("HE000_output18001-24000.csv", header = FALSE) #matlab18001-24000 VERIFIED
-M5 <- read.csv("HE000_output24001-30000.csv", header = FALSE) #matlab24001-30000
+M5 <- read.csv("HE000_output24001-30000.csv", header = FALSE) #matlab24001-30000 VERIFIED
 
 
-m <- 1:6000
-train_rows <- sample(6000,5200)
+
+
+X <- rbind(M1, M2, M3, M4,M5)
+#test <-  rbind(M1[test_rows,],M2[test_rows,],M3[test_rows,],M4[test_rows,],M5[test_rows,])
+
+
+m <- 1:30000
+train_rows <- sample(30000,26500)
 test_rows <- m[-train_rows]
 
-train.X <- rbind(M1[train_rows,], M2[train_rows,], M3[train_rows,], M4[train_rows,])
-test.X <-  rbind(M1[test_rows,],M2[test_rows,],M3[test_rows,],M4[test_rows,],M5[test_rows,])
+train.X <- X[train_rows,]
+test.X <- X[test_rows,]
 train.direction <- train$y[train_rows]
-
-
 library(class)
 
 
-knn.pred <- knn(train.X, test.X, train.direction, k=3,prob = TRUE)
+knn.pred <- knn(train.X, test.X, train.direction, k=4,prob = TRUE)
 
 Z= train$y[test_rows] == knn.pred
 O=length(grep("FALSE",Z))
