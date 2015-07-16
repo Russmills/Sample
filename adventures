@@ -1,0 +1,69 @@
+---
+title: "adventure"
+author: "Jiyi Jiang"
+date: "July 15, 2015"
+output: html_document
+---
+
+#unpack preprocessed digits.
+```{r}
+setwd("C:/Users/sumloaner/Desktop/summer research")
+#tsne input
+Q <- read.csv("darken_matrix.csv", header = FALSE)
+
+#tsne output
+P <- read.csv("Rtsneoutput.csv", header = FALSE) #Rtsne result
+M <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE)#Matlabtsne_result (BETTER RESULT HAHAHAHAHAHA)
+
+#Display result
+library(plot3D)
+library(rgl)
+labels <- train$y[1:6000]
+cc1=gsub("1","gold",labels)
+cc2=gsub("0","darkgreen",cc1)
+colorlabels <- cc2
+
+pc1 <- matrix(M[,1])
+pc2 <- matrix(M[,2])
+pc3 <- matrix(M[,3])
+plot3d(pc1,pc2,pc3, col=cc2)
+```
+
+
+```{r}
+write.csv(Q, "HE000_matrix24001-30000.csv")
+write.csv(M, "kirsch_matrix6000.csv")
+
+```                                                                                                                                             
+
+#KNN on MNIST
+```{r}
+
+set.seed(1)
+
+M1 <- read.csv("matlabtnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIFIED
+M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000
+M3 <- read.csv("HE000_output12001-18000.csv", header = FALSE) #matlab12001-18000 VERIFIED
+M4 <- read.csv("HE000_output18001-24000.csv", header = FALSE) #matlab18001-24000 
+M5 <- read.csv("HE000_output24001-30000.csv", header = FALSE) #matlab24001-30000
+
+
+m <- 1:30000
+train_rows <- sample(30000,3000)
+test_rows <- m[-train_rows]
+
+train.X <- (M[train_rows,])
+test.X <- (M[test_rows,])
+train.direction <- train$y[train_rows]
+
+
+library(class)
+
+
+knn.pred <- knn(train.X, test.X, train.direction, k=3,prob = TRUE)
+
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(30000-O)/30000
+```
+
