@@ -18,14 +18,14 @@ M <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE)#Matlabtsne_result (B
 #Display result
 library(plot3D)
 library(rgl)
-labels <- train$y[1:6000]
+labels <- train$y[12001:18000]
 cc1=gsub("1","gold",labels)
 cc2=gsub("0","darkgreen",cc1)
 colorlabels <- cc2
 
-pc1 <- matrix(M[,1])
-pc2 <- matrix(M[,2])
-pc3 <- matrix(M[,3])
+pc1 <- matrix(M3[,1])
+pc2 <- matrix(M3[,2])
+pc3 <- matrix(M3[,3])
 plot3d(pc1,pc2,pc3, col=cc2)
 ```
 
@@ -41,19 +41,19 @@ write.csv(M, "kirsch_matrix6000.csv")
 
 set.seed(1)
 
-M1 <- read.csv("matlabtnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIFIED
-M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000
+M1 <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIFIED
+M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000 VERIFIED
 M3 <- read.csv("HE000_output12001-18000.csv", header = FALSE) #matlab12001-18000 VERIFIED
-M4 <- read.csv("HE000_output18001-24000.csv", header = FALSE) #matlab18001-24000 
+M4 <- read.csv("HE000_output18001-24000.csv", header = FALSE) #matlab18001-24000 VERIFIED
 M5 <- read.csv("HE000_output24001-30000.csv", header = FALSE) #matlab24001-30000
 
 
-m <- 1:30000
-train_rows <- sample(30000,3000)
+m <- 1:6000
+train_rows <- sample(6000,5200)
 test_rows <- m[-train_rows]
 
-train.X <- (M[train_rows,])
-test.X <- (M[test_rows,])
+train.X <- rbind(M1[train_rows,], M2[train_rows,], M3[train_rows,], M4[train_rows,])
+test.X <-  rbind(M1[test_rows,],M2[test_rows,],M3[test_rows,],M4[test_rows,],M5[test_rows,])
 train.direction <- train$y[train_rows]
 
 
@@ -67,3 +67,12 @@ O=length(grep("FALSE",Z))
 (30000-O)/30000
 ```
 
+```{r}
+m <- 1:6000
+train_rows <- sample(6000,5000)
+test_rows <- m[-train_rows]
+
+train.X <- (M[train_rows,])
+test.X <- (M[test_rows,])
+train.direction <- train$y[train_rows]
+```
