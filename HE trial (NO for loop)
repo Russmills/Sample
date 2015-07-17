@@ -1,0 +1,187 @@
+---
+title: "HE trial (NO for loop)"
+author: "Jiyi Jiang"
+date: "July 17, 2015"
+output: html_document
+---
+
+```{r}
+n <-236
+```
+# Histogram equalization
+
+```{r}
+library(IM)
+
+unflatten <- function(arr784) {
+    return(matrix(arr784, nrow=28)[,28:1])
+}
+
+flatten <- function(mat28x28) {
+    return(as.vector(mat28x28[,28:1]))
+}
+
+digit_flat <- train$x[n,]
+
+# check that unflatten and flatten are inverse functions
+# digit_flat2 <- flatten(unflatten(digit_flat))
+# sum(digit_flat - digit_flat2)
+# show_digit(digit_flat)
+# show_digit(digit_flat2)
+
+digit_unflat <- unflatten(digit_flat)
+digit_histeq <- histeq( digit_unflat )
+
+show_digit(digit_flat)
+show_digit( flatten(digit_histeq) )
+```
+
+
+
+# Histogram equalization(background & noise)
+```{r}
+library(IM)
+
+unflatten <- function(arr784) {
+    return(matrix(arr784, nrow=28)[,28:1])
+}
+
+flatten <- function(mat28x28) {
+    return(as.vector(mat28x28[,28:1]))
+}
+
+
+           digit_flat <- train$x[n,]
+
+# check that unflatten and flatten are inverse functions
+# digit_flat2 <- flatten(unflatten(digit_flat))
+# sum(digit_flat - digit_flat2)
+# show_digit(digit_flat)
+# show_digit(digit_flat2)
+
+digit_unflat <- unflatten(digit_flat)
+digit_histeq <- histeq( digit_unflat )
+digit_histeq_modified <- flatten(digit_histeq)
+
+#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
+
+          
+          Average <- sum(digit_histeq_modified)/784
+          b <- digit_histeq_modified < Average
+          digit_histeq_modified[b] <- 0
+
+
+
+
+#show_digit(digit_flat)
+
+show_digit(  digit_histeq_modified )
+```
+# Histogram equalization(background & noise &darken)
+```{r}
+library(IM)
+
+unflatten <- function(arr784) {
+    return(matrix(arr784, nrow=28)[,28:1])
+}
+
+flatten <- function(mat28x28) {
+    return(as.vector(mat28x28[,28:1]))
+}
+
+
+                digit_flat <- train$x[n,]
+
+# check that unflatten and flatten are inverse functions
+# digit_flat2 <- flatten(unflatten(digit_flat))
+# sum(digit_flat - digit_flat2)
+# show_digit(digit_flat)
+# show_digit(digit_flat2)
+
+digit_unflat <- unflatten(digit_flat)
+digit_histeq <- histeq( digit_unflat )
+digit_histeq_modified <- flatten(digit_histeq)
+
+#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
+
+          
+          Average <- sum(digit_histeq_modified)/770
+          b <- digit_histeq_modified < Average
+          digit_histeq_modified[b] <- 0
+          c <- digit_histeq_modified > Average
+          digit_histeq_modified[c] <- max(digit_histeq_modified) 
+
+
+
+#show_digit(digit_flat)
+
+show_digit(digit_histeq_modified)
+```
+
+# Histogram equalization(background & noise &darken)
+```{r}
+library(IM)
+
+unflatten <- function(arr784) {
+    return(matrix(arr784, nrow=28)[,28:1])
+}
+
+flatten <- function(mat28x28) {
+    return(as.vector(mat28x28[,28:1]))
+}
+
+
+                digit_flat <- train$x[n,]
+
+# check that unflatten and flatten are inverse functions
+# digit_flat2 <- flatten(unflatten(digit_flat))
+# sum(digit_flat - digit_flat2)
+# show_digit(digit_flat)
+# show_digit(digit_flat2)
+
+digit_unflat <- unflatten(digit_flat)
+digit_histeq <- histeq( digit_unflat )
+digit_histeq_modified <- flatten(digit_histeq)
+
+#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
+
+          
+          Average <- sum(digit_histeq_modified)/784
+          b <- digit_histeq_modified < Average
+          digit_histeq_modified[b] <- 0
+          c <- digit_histeq_modified > Average
+          digit_histeq_modified[c] <- max(digit_histeq_modified) 
+
+
+
+#show_digit(digit_flat)
+
+show_digit(digit_histeq_modified)
+```
+# Histogram equalization
+
+```{r}
+library(IM)
+
+unflatten <- function(arr784) {
+    return(matrix(arr784, nrow=28)[,28:1])
+}
+
+flatten <- function(mat28x28) {
+    return(as.vector(mat28x28[,28:1]))
+}
+
+digit_flat <- train$x[n,]
+
+# check that unflatten and flatten are inverse functions
+# digit_flat2 <- flatten(unflatten(digit_flat))
+# sum(digit_flat - digit_flat2)
+# show_digit(digit_flat)
+# show_digit(digit_flat2)
+
+digit_unflat <- unflatten(digit_flat)
+digit_histeq <- histeq( digit_unflat )
+
+show_digit(digit_flat)
+
+```
