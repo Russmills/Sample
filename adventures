@@ -18,14 +18,14 @@ M <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE)#Matlabtsne_result (B
 #Display result
 library(plot3D)
 library(rgl)
-labels <- train$y[12001:18000]
+labels <- train$y[1:6000]
 cc1=gsub("1","gold",labels)
 cc2=gsub("0","darkgreen",cc1)
 colorlabels <- cc2
 
-pc1 <- matrix(M3[,1])
-pc2 <- matrix(M3[,2])
-pc3 <- matrix(M3[,3])
+pc1 <- matrix(M[,1])
+pc2 <- matrix(M[,2])
+pc3 <- matrix(M[,3])
 plot3d(pc1,pc2,pc3, col=cc2)
 ```
 
@@ -39,7 +39,7 @@ write.csv(M, "kirsch_matrix6000.csv")
 #KNN on MNIST
 ```{r}
 
-set.seed(1)
+
 
 M1 <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIFIED
 M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000 VERIFIED
@@ -64,11 +64,69 @@ train.direction <- train$y[train_rows]
 library(class)
 
 
-knn.pred <- knn(train.X, test.X, train.direction, k=4,prob = TRUE)
-
+#knn.pred <- knn(train.X, test.X, train.direction, k=6,prob = TRUE)
+knn.pred <- knn1(train.X, test.X, train.direction)
 Z= train$y[test_rows] == knn.pred
 O=length(grep("FALSE",Z))
 (30000-O)/30000
+```
+
+
+#770KNN on MNIST
+```{r}
+
+
+
+Q1 <- read.csv("770HE000_output1-6000.csv", header = FALSE) #770matlab1-6000 VERIFIED
+Q2 <- read.csv("770HE000_output6001-12000.csv", header = FALSE) #770matlab6001-12000 VERIFIED
+Q3 <- read.csv("770HE000_output12001-18000.csv", header = FALSE) #770matlab12001-18000 
+Q4 <- read.csv("770HE000_output18001-24000.csv", header = FALSE) #770matlab18001-24000 
+Q5 <- read.csv("770HE000_output24001-30000.csv", header = FALSE) #770matlab24001-30000 
+
+
+
+
+X <- rbind(M1, M2, M3, M4,M5)
+#test <-  rbind(q1[test_rows,],Q2[test_rows,],Q3[test_rows,],Q4[test_rows,],Q5[test_rows,])
+
+
+m <- 1:30000
+train_rows <- sample(30000,26500)
+test_rows <- m[-train_rows]
+
+train.X <- X[train_rows,]
+test.X <- X[test_rows,]
+train.direction <- train$y[train_rows]
+library(class)
+
+
+#knn.pred <- knn(train.X, test.X, train.direction, k=6,prob = TRUE)
+knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(30000-O)/30000
+```
+#KNN on MNIST
+```{r}
+
+M <- read.csv("770HE000_output1-6000.csv", header = FALSE) #matlab1-6000 VERIFIED
+
+
+m <- 1:6000
+train_rows <- sample(6000,5000)
+test_rows <- m[-train_rows]
+
+train.X <- M[train_rows,]
+test.X <- M[test_rows,]
+train.direction <- train$y[train_rows]
+library(class)
+
+
+knn.pred <- knn(train.X, test.X, train.direction, k=3,prob = TRUE)
+#knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(6000-O)/6000
 ```
 
 ```{r}
