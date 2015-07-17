@@ -1,187 +1,199 @@
 ---
-title: "HE trial (NO for loop)"
+title: "adventure"
 author: "Jiyi Jiang"
-date: "July 17, 2015"
+date: "July 15, 2015"
 output: html_document
 ---
 
+#unpack preprocessed digits.
 ```{r}
-n <-236
-```
-# Histogram equalization
+setwd("C:/Users/sumloaner/Desktop/summer research")
+#tsne input
+Q <- read.csv("darken_matrix.csv", header = FALSE)
 
-```{r}
-library(IM)
+#tsne output
+P <- read.csv("Rtsneoutput.csv", header = FALSE) #Rtsne result
+M <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE)#Matlabtsne_result (BETTER RESULT HAHAHAHAHAHA)
 
-unflatten <- function(arr784) {
-    return(matrix(arr784, nrow=28)[,28:1])
-}
+#Display result
+library(plot3D)
+library(rgl)
+labels <- train$y[1:6000]
+cc1=gsub("1","gold",labels)
+cc2=gsub("0","darkgreen",cc1)
+colorlabels <- cc2
 
-flatten <- function(mat28x28) {
-    return(as.vector(mat28x28[,28:1]))
-}
-
-digit_flat <- train$x[n,]
-
-# check that unflatten and flatten are inverse functions
-# digit_flat2 <- flatten(unflatten(digit_flat))
-# sum(digit_flat - digit_flat2)
-# show_digit(digit_flat)
-# show_digit(digit_flat2)
-
-digit_unflat <- unflatten(digit_flat)
-digit_histeq <- histeq( digit_unflat )
-
-show_digit(digit_flat)
-show_digit( flatten(digit_histeq) )
+pc1 <- matrix(M[,1])
+pc2 <- matrix(M[,2])
+pc3 <- matrix(M[,3])
+plot3d(pc1,pc2,pc3, col=cc2)
 ```
 
 
-
-# Histogram equalization(background & noise)
 ```{r}
-library(IM)
+write.csv(Q, "HE000_matrix24001-30000.csv")
+write.csv(M, "kirsch_matrix6000.csv")
 
-unflatten <- function(arr784) {
-    return(matrix(arr784, nrow=28)[,28:1])
-}
+```                                                                                                                                             
 
-flatten <- function(mat28x28) {
-    return(as.vector(mat28x28[,28:1]))
-}
-
-
-           digit_flat <- train$x[n,]
-
-# check that unflatten and flatten are inverse functions
-# digit_flat2 <- flatten(unflatten(digit_flat))
-# sum(digit_flat - digit_flat2)
-# show_digit(digit_flat)
-# show_digit(digit_flat2)
-
-digit_unflat <- unflatten(digit_flat)
-digit_histeq <- histeq( digit_unflat )
-digit_histeq_modified <- flatten(digit_histeq)
-
-#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
-
-          
-          Average <- sum(digit_histeq_modified)/784
-          b <- digit_histeq_modified < Average
-          digit_histeq_modified[b] <- 0
+#KNN on MNIST(better)
+```{r}
 
 
 
+M1 <- read.csv("matlabtsnedarkenoutput.csv", header = FALSE) #matlab1-6000 VERIFIED
+M2 <- read.csv("HE000_output6001-12000.csv", header = FALSE) #matlab6001-12000 VERIFIED
+M3 <- read.csv("HE000_output12001-18000.csv", header = FALSE) #matlab12001-18000 VERIFIED
+M4 <- read.csv("HE000_output18001-24000.csv", header = FALSE) #matlab18001-24000 VERIFIED
+M5 <- read.csv("HE000_output24001-30000.csv", header = FALSE) #matlab24001-30000 VERIFIED
+M6 <- read.csv("HE000_output30001-36000.csv", header = FALSE) #matlab30001-36000 VERIFIED
+M7 <- read.csv("HE000_output36001-42000.csv", header = FALSE) #matlab36001-42000 VERIFIED
+M8 <- read.csv("HE000_output42001-48000.csv", header = FALSE) #matlab42001-48000 VERIFIED
+M9 <- read.csv("HE000_output48001-54000.csv", header = FALSE) #matlab48000-54000 VERIFIED 
+M10 <- read.csv("HE000_output54001-60000.csv", header = FALSE) #matlab48000-54000 VERIFIED (BEST CLUSTERS)
 
-#show_digit(digit_flat)
+T1 <- read.csv("test_output1-6000.csv", header = FALSE) #VERIFIED
+T2 <- read.csv("test_output6001-10000.csv", header = FALSE) #VERIFIED (GREAT CLUSTERS)
 
-show_digit(  digit_histeq_modified )
+X <- rbind(M1, M2, M3, M4,M5, M6, M7, M8, M9, M10)
+Y <- rbind(T1,T2)
+#test <-  rbind(M1[test_rows,],M2[test_rows,],M3[test_rows,],M4[test_rows,],M5[test_rows,])
+
+
+train.X <- X[1:60000,]
+test.X1 <- Y[1:2000,]
+test.X2 <- Y[2001:4000,]
+test.X3 <- Y[4001:6000,]
+test.X4 <- Y[6001:8000,]
+test.X5 <- Y[8001:10000,]
+train.direction <- train$y[1:60000]
+
+
+
+library(class)
+
+
+knn.pred1 <- knn1(train.X, test.X1, train.direction)
+knn.pred2<- knn1(train.X, test.X2, train.direction)
+knn.pred3 <- knn1(train.X, test.X3, train.direction)
+knn.pred4 <- knn1(train.X, test.X4, train.direction)
+knn.pred5 <- knn1(train.X, test.X5, train.direction)
+
+Z1= test$y[1:2000] == knn.pred1
+Z2= test$y[2001:4000] == knn.pred2
+Z3= test$y[4001:6000] == knn.pred3
+Z4= test$y[6001:8000] == knn.pred4
+Z5= test$y[8001:10000] == knn.pred5
+
+O1=length(grep("FALSE",Z1))
+O2=length(grep("FALSE",Z2))
+O3=length(grep("FALSE",Z3))
+O4=length(grep("FALSE",Z4))
+O5=length(grep("FALSE",Z5))
+
+O <- O1+O2+O3+O4+O5 
+
+####
+m <- 1:60000
+#train_rows <- sample(30000,26500)
+#test_rows <- m[-train_rows]
+test_rows <- sample(10000,2000)
+train.X <- X[1:60000,]
+test.X <- Y[test_rows,]
+train.direction <- train$y[1:60000]
+library(class)
+
+
+#knn.pred <- knn(train.X, test.X, train.direction, k=6,prob = TRUE)
+knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+
+(10000-O)/10000
+
+
+
+m <- 1:30000
+train_rows <- sample(30000,27000)
+test_rows <- m[-train_rows]
+
+train.X <- X[train_rows,]
+test.X <- X[test_rows,]
+train.direction <- train$y[train_rows]
+library(class)
+
+
+#knn.pred <- knn(train.X, test.X, train.direction, k=6,prob = TRUE)
+knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(3000-O)/3000
 ```
-# Histogram equalization(background & noise &darken)
+
+
+#770KNN on MNIST
 ```{r}
-library(IM)
-
-unflatten <- function(arr784) {
-    return(matrix(arr784, nrow=28)[,28:1])
-}
-
-flatten <- function(mat28x28) {
-    return(as.vector(mat28x28[,28:1]))
-}
-
-
-                digit_flat <- train$x[n,]
-
-# check that unflatten and flatten are inverse functions
-# digit_flat2 <- flatten(unflatten(digit_flat))
-# sum(digit_flat - digit_flat2)
-# show_digit(digit_flat)
-# show_digit(digit_flat2)
-
-digit_unflat <- unflatten(digit_flat)
-digit_histeq <- histeq( digit_unflat )
-digit_histeq_modified <- flatten(digit_histeq)
-
-#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
-
-          
-          Average <- sum(digit_histeq_modified)/770
-          b <- digit_histeq_modified < Average
-          digit_histeq_modified[b] <- 0
-          c <- digit_histeq_modified > Average
-          digit_histeq_modified[c] <- max(digit_histeq_modified) 
 
 
 
-#show_digit(digit_flat)
+Q1 <- read.csv("770HE000_output1-6000.csv", header = FALSE) #770matlab1-6000 VERIFIED
+Q2 <- read.csv("770HE000_output6001-12000.csv", header = FALSE) #770matlab6001-12000 VERIFIED
+Q3 <- read.csv("770HE000_output12001-18000.csv", header = FALSE) #770matlab12001-18000 VERIFIED
+Q4 <- read.csv("770HE000_output18001-24000.csv", header = FALSE) #770matlab18001-24000 VERIFIED
+Q5 <- read.csv("770HE000_output24001-30000.csv", header = FALSE) #770matlab24001-30000 VERIFIED
 
-show_digit(digit_histeq_modified)
+
+
+
+X <- rbind(Q1, Q2, Q3,Q4,Q5)
+#test <-  rbind(q1[test_rows,],Q2[test_rows,],Q3[test_rows,],Q4[test_rows,],Q5[test_rows,])
+n<-30000
+
+m <- 1:n
+train_rows <- sample(30000,27000)
+test_rows <- m[-train_rows]
+
+train.X <- X[train_rows,]
+test.X <- X[test_rows,]
+train.direction <- train$y[train_rows]
+library(class)
+
+
+#knn.pred <- knn(train.X, test.X, train.direction, k=4,prob = TRUE)
+knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(3000-O)/3000
+```
+#KNN on MNIST
+```{r}
+
+M <- read.csv("770HE000_output1-6000.csv", header = FALSE) #matlab1-6000 VERIFIED
+
+
+m <- 1:6000
+train_rows <- sample(6000,5000)
+test_rows <- m[-train_rows]
+
+train.X <- M[train_rows,]
+test.X <- M[test_rows,]
+train.direction <- train$y[train_rows]
+library(class)
+
+
+knn.pred <- knn(train.X, test.X, train.direction, k=3,prob = TRUE)
+#knn.pred <- knn1(train.X, test.X, train.direction)
+Z= train$y[test_rows] == knn.pred
+O=length(grep("FALSE",Z))
+(6000-O)/6000
 ```
 
-# Histogram equalization(background & noise &darken)
 ```{r}
-library(IM)
+m <- 1:6000
+train_rows <- sample(6000,5000)
+test_rows <- m[-train_rows]
 
-unflatten <- function(arr784) {
-    return(matrix(arr784, nrow=28)[,28:1])
-}
-
-flatten <- function(mat28x28) {
-    return(as.vector(mat28x28[,28:1]))
-}
-
-
-                digit_flat <- train$x[n,]
-
-# check that unflatten and flatten are inverse functions
-# digit_flat2 <- flatten(unflatten(digit_flat))
-# sum(digit_flat - digit_flat2)
-# show_digit(digit_flat)
-# show_digit(digit_flat2)
-
-digit_unflat <- unflatten(digit_flat)
-digit_histeq <- histeq( digit_unflat )
-digit_histeq_modified <- flatten(digit_histeq)
-
-#digit_histeq_modified [ which(digit_histeq_modified  == min(digit_histeq_modified )) ] <- 0
-
-          
-          Average <- sum(digit_histeq_modified)/784
-          b <- digit_histeq_modified < Average
-          digit_histeq_modified[b] <- 0
-          c <- digit_histeq_modified > Average
-          digit_histeq_modified[c] <- max(digit_histeq_modified) 
-
-
-
-#show_digit(digit_flat)
-
-show_digit(digit_histeq_modified)
-```
-# Histogram equalization
-
-```{r}
-library(IM)
-
-unflatten <- function(arr784) {
-    return(matrix(arr784, nrow=28)[,28:1])
-}
-
-flatten <- function(mat28x28) {
-    return(as.vector(mat28x28[,28:1]))
-}
-
-digit_flat <- train$x[n,]
-
-# check that unflatten and flatten are inverse functions
-# digit_flat2 <- flatten(unflatten(digit_flat))
-# sum(digit_flat - digit_flat2)
-# show_digit(digit_flat)
-# show_digit(digit_flat2)
-
-digit_unflat <- unflatten(digit_flat)
-digit_histeq <- histeq( digit_unflat )
-
-show_digit(digit_flat)
-
+train.X <- (M[train_rows,])
+test.X <- (M[test_rows,])
+train.direction <- train$y[train_rows]
 ```
