@@ -1,0 +1,58 @@
+---
+title: "input for adventures"
+author: "Jiyi Jiang"
+date: "July 16, 2015"
+output: html_document
+---
+
+# Run 3D Rtsne
+
+```{r}
+#write.table(M, file = "kirsch_matrix.csv", append = FALSE, quote = TRUE, sep = ",",row.names=FALSE,col.names = FALSE)
+
+Q <- read.csv("HE000_matrix24001-30000.csv", header = FALSE)
+library(Rtsne)
+
+labels <- train$y[24001:30000]
+Rtsne_input=Q[1:6000,]# number of random rows of 60000.
+library(Rtsne)
+Rtsne_result=Rtsne(Rtsne_input, dims = 3, initial_dims = 30, perplexity = 40,
+        theta = 0, check_duplicates = TRUE, pca = TRUE, max_iter = 1000,
+        verbose = FALSE, is_distance = FALSE)
+
+
+pc1 <- matrix(Rtsne_result$Y[,1])
+pc2 <- matrix(Rtsne_result$Y[,2])
+pc3 <- matrix(Rtsne_result$Y[,3])
+cc1=gsub("1","gold",labels)
+cc2=gsub("0","darkgreen",cc1)
+colorlabels <- cc2
+
+#plot3d(pc1, pc2, pc3)
+library(plot3D)
+library(rgl)
+plot3d(pc1,pc2,pc3, col=cc2)
+
+write.table(M, file = "HE000_output6001-12000(R).csv", append = FALSE, quote = TRUE, sep = ",",row.names=FALSE,col.names = FALSE)
+
+
+```
+
+
+
+```{R}
+M <- read.csv("test_output6001-10000.csv", header = FALSE)
+labels <- test$y[6001:10000]
+pc1 <- M[,1]
+pc2 <- M[,2]
+pc3 <- M[,3]
+cc1=gsub("1","gold",labels)
+cc2=gsub("0","darkgreen",cc1)
+colorlabels <- cc2
+
+#plot3d(pc1, pc2, pc3)
+library(plot3D)
+library(rgl)
+plot3d(pc1,pc2,pc3, col=cc2)
+
+```
